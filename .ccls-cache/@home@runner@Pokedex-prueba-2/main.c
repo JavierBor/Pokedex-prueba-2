@@ -1,45 +1,158 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+#include <ctype.h>
+#include "TDAs/list.h"
+#include "TDAs/map.h"
+#include "TDAs/extra.h"
 
-void imprimirMenu(){
-  printf("1) Cargar pokémon.\n");
-  printf("2) Buscar pokémon por nombre.\n");
-  printf("3) Buscar pokémon por número.\n");
-  printf("4) Buscar pokémon por tipo.\n");
-  printf("5) Buscar pokémon por generacion.\n");
-  printf("6) Salir.\n");
-  return;
+typedef struct {
+    char nombre[100];
+    char numero[5];
+    List *tipos;
+    char generacion[100];
+    char legendario[100];
+} Pokemon;
+
+int is_equal_int(void *key1, void *key2) {
+    return *(int *)key1 == *(int *)key2;
+}
+
+int is_equal_str(void *key1, void *key2) {
+    return strcmp((char *)key1, (char *)key2) == 0;
 }
 
 
-int main(void) {
-  int opcion;
-  
-  do{
-    imprimirMenu();
-    printf("Ingrese una opcion: ");
-    scanf("%i", &opcion);
-    switch(opcion){
-      case 1:
-        printf("Cargando pokémon\n");
-        break;
-      case 2:
-        printf("Buscando pokémon por nombre\n");
-        break;
-      case 3:
-        printf("Buscando pokémon por número\n");
-        break;
-      case 4:
-        printf("Buscando pokémon por tipo\n");
-        break;
-      case 5:
-        printf("Buscando pokémon por generacion\n");
-        break;
-      case 6:
-        printf("Saliendo\n");
-        break;
-      default:
-        printf("Opción no válida\n");
-        break;
+//-----------------------------------------------------------------------------------
+int es_numero(const char *cadena) {
+    for (int i = 0; cadena[i] != '\0'; i++) {
+        if (!isdigit(cadena[i])) {
+            return 0;
+        }
     }
-  }while (opcion != 6);
+    return 1;
+}
+void cargar_pokemon(Map *nombrePokemon, Map *tipoPokemon, Map *numeroPokemon, Map *generacionPokemon){
+    FILE *archivo = fopen("Pokemon.csv", "r");
+    if (archivo == NULL) {
+        perror("Error al abrir el archivo");
+        return;
+    }
+    
+
+    char **campos;
+    campos = leer_linea_csv(archivo, ',');
+    while ((campos = leer_linea_csv(archivo, ',')) != NULL){
+        Pokemon *pokemon = (Pokemon *)malloc(sizeof(Pokemon));
+        if (pokemon == NULL) {
+            perror("Error al asignar memoria");
+            return;
+        }
+        //printf("Hola mundo\n");
+        strcpy(pokemon->numero, campos[0]);
+        strcpy(pokemon->nombre, campos[1]);
+        
+        pokemon->tipos = list_create();
+        list_pushBack(pokemon->tipos, strdup(campos[2]));
+        
+        if (!es_numero(campos[3])){
+            list_pushBack(pokemon->tipos, strdup(campos[3]));
+            strcpy(pokemon->generacion, campos[11]);
+            strcpy(pokemon->legendario, campos[12]);
+        }
+        else
+        {
+            strcpy(pokemon->generacion, campos[10]);
+            strcpy(pokemon->legendario, campos[11]);
+        }
+          void *data = list_first(pokemon->tipos);
+          while (data != NULL) {
+              printf("%s ", (char *)data);
+              data = list_next(pokemon->tipos);
+          }
+          printf("\n");
+        //strcpy(pokemon->generacion, campos[11]);
+        //printf("Generacion: %s\n", pokemon->generacion);
+
+        //printf("Legendario: %s\n", pokemon->legendario);
+        map_insert(nombrePokemon, pokemon->nombre, pokemon);
+    }
+    fclose(archivo);
+
+    MapPair *pair = map_first(nombrePokemon);
+    while (pair != NULL){
+        Pokemon *pokemon = (Pokemon *)pair->value;
+        printf("-------------------------------\n");
+        printf("Nombre: %s\n", pokemon->nombre);
+        printf("Numero: %s\n", pokemon->numero);
+        char *tipo = (char *)list_first(pokemon->tipos);
+        printf("Tipo/s:");
+        while (tipo != NULL){
+            printf(" %s", tipo);
+            tipo = (char *)list_next(pokemon->tipos);
+        }
+        printf("\n");
+        printf("Generacion: %s\n", pokemon->generacion);
+        printf("Legendario: %s\n", pokemon->legendario);
+        
+        pair = map_next(nombrePokemon);
+    }
+    printf("-------------------------------\n");
+
+}
+
+
+//-----------------------------------------------------------------------------------
+
+
+void mostrarMenu() {
+    printf("========================================\n");
+    printf("     MENU PRINCIPAL\n");
+    printf("========================================\n");
+    printf("1. Cargar pokémon\n");
+    printf("2. Buscar por nombre\n");
+    printf("3. Buscar por número\n");
+    printf("4. Buscar por tipo\n");
+    printf("5. Buscar por generación\n");
+    printf("6. Salir\n\n");
+}
+
+int main(void) {
+    int opcion;
+    Map *nombrePokemon = map_create(is_equal_str);
+    Map *numeroPokemon = map_create(is_equal_str);
+    Map *tipoPokemon = map_create(is_equal_str);
+    Map *generacionPokemon = map_create(is_equal_str);
+
+    do {
+        mostrarMenu();
+        printf("Ingrese su opción: ");
+        scanf("%d", &opcion);
+        switch (opcion) {
+        case 1:
+            printf("Cargando pokémon...\n\n");
+            cargar_pokemon(nombrePokemon, tipoPokemon, numeroPokemon, generacionPokemon);
+            break;
+        case 2:
+            printf("Buscando por nombre...\n\n");
+            break;
+        case 3:
+            printf("Buscando por número...\n\n");
+            break;
+        case 4:
+            printf("Buscando por tipo...\n\n");
+            break;
+        case 5:
+            printf("Buscando por generación...\n\n");
+            break;
+        case 6:
+            printf("Saliendo...\n");
+            break;
+        default:
+            printf("Opción inválida...\n\n");
+            break;
+        }
+    } while (opcion != 6);
+    return 0;
 }
