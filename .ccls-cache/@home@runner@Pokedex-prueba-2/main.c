@@ -117,7 +117,40 @@ void mostrarMenu() {
     printf("5. Buscar por generación\n");
     printf("6. Salir\n\n");
 }
-
+//-----------------------------------------------------------------------------------
+void buscarPorNombre(Map *nombrePokemon)
+{
+    char nombre[100];
+    printf("Ingrese el nombre del pokemon a buscar: ");
+    scanf("%s", nombre);
+    limpiarPantalla();
+    MapPair *pair = map_search(nombrePokemon, nombre);
+    if (pair != NULL)
+    {
+        Pokemon *pokemon = (Pokemon *)pair->value;
+        
+        printf("POKEMON ENCONTRADO\n\n");
+        printf("-------------------------------\n");
+        printf("Nombre: %s\n", pokemon->nombre);
+        printf("Numero: %s\n", pokemon->numero);
+        char *tipo = (char *)list_first(pokemon->tipos);
+        printf("Tipo/s:");
+        while (tipo != NULL){
+            printf(" %s", tipo);
+            tipo = (char *)list_next(pokemon->tipos);
+        }
+        printf("\n");
+        printf("Generacion: %s\n", pokemon->generacion);
+        printf("Legendario: %s\n\n", pokemon->legendario);
+        
+        
+    }
+    else{
+        printf("POKEMON NO ENCONTRADO\n");
+    }
+}
+    
+//-----------------------------------------------------------------------------------
 int main(void) {
     int opcion;
     Map *nombrePokemon = map_create(is_equal_str);
@@ -133,9 +166,15 @@ int main(void) {
         case 1:
             printf("Cargando pokémon...\n\n");
             cargar_pokemon(nombrePokemon, tipoPokemon, numeroPokemon, generacionPokemon);
+            presioneTeclaParaContinuar();
+            limpiarPantalla();
             break;
         case 2:
+            limpiarPantalla();
             printf("Buscando por nombre...\n\n");
+            buscarPorNombre(nombrePokemon);
+            presioneTeclaParaContinuar();
+            limpiarPantalla();
             break;
         case 3:
             printf("Buscando por número...\n\n");
