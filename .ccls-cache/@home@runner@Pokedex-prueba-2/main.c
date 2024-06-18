@@ -40,7 +40,7 @@ void cargar_pokemon(Map *nombrePokemon, Map *tipoPokemon, Map *numeroPokemon, Ma
         return;
     }
     
-
+    List *listaPokeTipos;
     char **campos;
     campos = leer_linea_csv(archivo, ',');
     while ((campos = leer_linea_csv(archivo, ',')) != NULL){
@@ -56,26 +56,40 @@ void cargar_pokemon(Map *nombrePokemon, Map *tipoPokemon, Map *numeroPokemon, Ma
         pokemon->tipos = list_create();
         list_pushBack(pokemon->tipos, strdup(campos[2]));
         
+        MapPair *buscarTipo = map_search(tipoPokemon, campos[2]);
+        if ( buscarTipo == NULL || buscarTipo->value == NULL){
+            listaPokeTipos = list_create();
+            list_pushBack(listaPokeTipos, pokemon);
+            map_insert(tipoPokemon, strdup(campos[2]), listaPokeTipos);
+        }
+
+        else{
+            List *listaPokeTipos = buscarTipo->value;
+            list_pushBack(listaPokeTipos, pokemon);
+        }
+        
         if (!es_numero(campos[3])){
             list_pushBack(pokemon->tipos, strdup(campos[3]));
             strcpy(pokemon->generacion, campos[11]);
             strcpy(pokemon->legendario, campos[12]);
+
+            MapPair *buscarTipo = map_search(tipoPokemon, campos[3]);
+            if ( buscarTipo == NULL || buscarTipo->value == NULL){
+                listaPokeTipos = list_create();
+                list_pushBack(listaPokeTipos, pokemon);
+                map_insert(tipoPokemon, strdup(campos[3]), listaPokeTipos);
+            }
+
+            else{
+                List *listaPokeTipos = buscarTipo->value;
+                list_pushBack(listaPokeTipos, pokemon);
+            }
         }
         else
         {
             strcpy(pokemon->generacion, campos[10]);
             strcpy(pokemon->legendario, campos[11]);
         }
-          void *data = list_first(pokemon->tipos);
-          while (data != NULL) {
-              printf("%s ", (char *)data);
-              data = list_next(pokemon->tipos);
-          }
-          printf("\n");
-        //strcpy(pokemon->generacion, campos[11]);
-        //printf("Generacion: %s\n", pokemon->generacion);
-
-        //printf("Legendario: %s\n", pokemon->legendario);
         map_insert(nombrePokemon, pokemon->nombre, pokemon);
     }
     fclose(archivo);
@@ -123,7 +137,7 @@ void buscarPorNombre(Map *nombrePokemon)
     char nombre[100];
     printf("Ingrese el nombre del pokemon a buscar: ");
     scanf("%s", nombre);
-    limpiarPantalla();
+    printf("\n");
     MapPair *pair = map_search(nombrePokemon, nombre);
     if (pair != NULL)
     {
@@ -146,8 +160,10 @@ void buscarPorNombre(Map *nombrePokemon)
         
     }
     else{
+        printf("-------------------------------\n");
         printf("POKEMON NO ENCONTRADO\n");
     }
+    printf("-------------------------------\n");
 }
     
 //-----------------------------------------------------------------------------------
@@ -166,15 +182,10 @@ int main(void) {
         case 1:
             printf("Cargando pokémon...\n\n");
             cargar_pokemon(nombrePokemon, tipoPokemon, numeroPokemon, generacionPokemon);
-            presioneTeclaParaContinuar();
-            limpiarPantalla();
             break;
         case 2:
-            limpiarPantalla();
             printf("Buscando por nombre...\n\n");
             buscarPorNombre(nombrePokemon);
-            presioneTeclaParaContinuar();
-            limpiarPantalla();
             break;
         case 3:
             printf("Buscando por número...\n\n");
@@ -186,12 +197,14 @@ int main(void) {
             printf("Buscando por generación...\n\n");
             break;
         case 6:
-            printf("Saliendo...\n");
+            printf("Saliendo de la pokédex\n");
             break;
         default:
-            printf("Opción inválida...\n\n");
+            printf("Opción inválida. Por favor intenta de nuevo con una opcion valida\n\n");
             break;
         }
+        presioneTeclaParaContinuar();
+        limpiarPantalla();
     } while (opcion != 6);
     return 0;
 }
