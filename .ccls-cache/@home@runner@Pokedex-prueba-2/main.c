@@ -42,12 +42,27 @@ void cargar_pokemon(HashMap *nombrePokemon, HashMap *tipoPokemon, HashMap *numer
         }
         strcpy(pokemon->numero, campos[0]);
         strcpy(pokemon->nombre, campos[1]);
+        list_pushBack(pokemon->tipos, strdup(campos[2]));
+        
+        Pair *buscarTipo = searchMap(tipoPokemon, campos[2]);
+        if (buscarTipo == NULL || buscarTipo->value == NULL){
+            listaPokeTipos = list_create();
+            list_pushBack(listaPokeTipos, pokemon);
+            insertMap(tipoPokemon, campos[2], listaPokeTipos);
+            
+        }
+
+        else{
+            listaPokeTipos = (List *)buscarTipo->value;
+            list_pushBack(listaPokeTipos, pokemon);
+        }
+        
         if (!es_numero(campos[3])){
             list_pushBack(pokemon->tipos, strdup(campos[3]));
             strcpy(pokemon->generacion, campos[11]);
             strcpy(pokemon->legendario, campos[12]);
 
-            Pair *buscarTipo = searchMap(tipoPokemon, campos[3]);
+            buscarTipo = searchMap(tipoPokemon, campos[3]);
             if ( buscarTipo == NULL || buscarTipo->value == NULL){
                 listaPokeTipos = list_create();
                 list_pushBack(listaPokeTipos, pokemon);
