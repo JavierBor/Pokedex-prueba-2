@@ -42,47 +42,49 @@ void cargar_pokemon(HashMap *nombrePokemon, HashMap *tipoPokemon, HashMap *numer
         }
         strcpy(pokemon->numero, campos[0]);
         strcpy(pokemon->nombre, campos[1]);
+        pokemon->tipos = list_create();
         list_pushBack(pokemon->tipos, strdup(campos[2]));
-        
         Pair *buscarTipo = searchMap(tipoPokemon, campos[2]);
-        if (buscarTipo == NULL || buscarTipo->value == NULL){
+        if (buscarTipo == NULL || buscarTipo->value == NULL) {
             listaPokeTipos = list_create();
             list_pushBack(listaPokeTipos, pokemon);
-            insertMap(tipoPokemon, campos[2], listaPokeTipos);
-            
-        }
-
-        else{
+            insertMap(tipoPokemon, strdup(campos[2]), listaPokeTipos);
+        } 
+        else {
             listaPokeTipos = (List *)buscarTipo->value;
             list_pushBack(listaPokeTipos, pokemon);
         }
-        
+
         if (!es_numero(campos[3])){
             list_pushBack(pokemon->tipos, strdup(campos[3]));
-            strcpy(pokemon->generacion, campos[11]);
-            strcpy(pokemon->legendario, campos[12]);
 
             buscarTipo = searchMap(tipoPokemon, campos[3]);
-            if ( buscarTipo == NULL || buscarTipo->value == NULL){
+            if (buscarTipo == NULL || buscarTipo->value == NULL) {
                 listaPokeTipos = list_create();
                 list_pushBack(listaPokeTipos, pokemon);
                 insertMap(tipoPokemon, strdup(campos[3]), listaPokeTipos);
-            }
-
-            else{
+            } else {
                 List *listaPokeTiposEncontrados = buscarTipo->value;
                 list_pushBack(listaPokeTiposEncontrados, pokemon);
             }
+            strcpy(pokemon->generacion, campos[11]);
+            strcpy(pokemon->legendario, campos[12]);
+
         }
         else
         {
             strcpy(pokemon->generacion, campos[10]);
             strcpy(pokemon->legendario, campos[11]);
+
         }
+
+
+
         insertMap(nombrePokemon, pokemon->nombre, pokemon);
         }
+
         fclose(archivo);
-// EL QUE LEA ESTO, AUN QUE NO ESTE IMPLEMENTADO EL DE TIPOS Y GENERACION DEBERIA CARGAR LOS MAPAS IGUAL, SI NO ME CREEN PRUEBEN CON EL REPLIT REALG  
+
     Pair *pair = firstMap(nombrePokemon);
     size_t totalPokemones = 0;
     while (pair != NULL){
@@ -147,12 +149,12 @@ void cargar_pokemon(HashMap *nombrePokemon, HashMap *tipoPokemon, HashMap *numer
           }
           printf("\n");
           printf("Generacion: %s\n", pokemon->generacion);
-          printf("Legendario: %s\n\n", pokemon->legendario);
+          printf("Legendario: %s\n", pokemon->legendario);
       } else {
           printf("-------------------------------\n");
           printf("POKEMON NO ENCONTRADO\n");
       }
-      printf("------------------------------\n");
+      printf("------------------------------\n\n");
   }
 
   int main(void) {
@@ -173,6 +175,7 @@ void cargar_pokemon(HashMap *nombrePokemon, HashMap *tipoPokemon, HashMap *numer
                   break;
               case 2:
                   printf("Buscando por nombre...\n\n");
+                  limpiarPantalla();
                   buscarPorNombre(nombrePokemon);
                   break;
               case 3:
