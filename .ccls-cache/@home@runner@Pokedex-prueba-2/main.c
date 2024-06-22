@@ -15,14 +15,28 @@
       char legendario[100];
   } Pokemon;
 
+void mostrarMenu() {
+    printf("========================================\n");
+    printf("     MENU PRINCIPAL\n");
+    printf("========================================\n");
+    printf("1. Cargar pokémon\n");
+    printf("2. Buscar por nombre\n");
+    printf("3. Buscar por número\n");
+    printf("4. Buscar por tipo\n");
+    printf("5. Buscar por generación\n");
+    printf("6. WHO IS THAT POKEMON?\n");
+    printf("7. Salir\n\n");
+  }
+
+
   // Función para verificar si una cadena es un número
-  int es_numero(const char *cadena) {
-      for (int i = 0; cadena[i] != '\0'; i++) {
-          if (!isdigit(cadena[i])) {
-              return 0;
-          }
-      }
-      return 1;
+int es_numero(const char *cadena) {
+    for (int i = 0; cadena[i] != '\0'; i++) {
+        if (!isdigit(cadena[i])) {
+          return 0;
+        }
+    }
+    return 1;
   }
 void cargar_pokemon(HashMap *nombrePokemon, HashMap *tipoPokemon, HashMap *numeroPokemon, HashMap *generacionPokemon) {
     FILE *archivo = fopen("Pokemon.csv", "r");
@@ -114,91 +128,178 @@ void cargar_pokemon(HashMap *nombrePokemon, HashMap *tipoPokemon, HashMap *numer
 }
 
 
+void buscarPorNombre(HashMap *nombrePokemon) {
+    char nombre[100];
+    printf("Ingrese el nombre del pokemon a buscar: ");
+    scanf("%s", nombre);
+    printf("\n");
+    Pair *pair = searchMap(nombrePokemon, nombre);
+    if (pair != NULL) {
+        Pokemon *pokemon = (Pokemon *)pair->value;
+
+        printf("POKEMON ENCONTRADO\n\n");
+        printf("-------------------------------\n");
+        printf("Nombre: %s\n", pokemon->nombre);
+        printf("Numero: %s\n", pokemon->numero);
+        char *tipo = (char *)list_first(pokemon->tipos);
+        printf("Tipo/s:");
+        while (tipo != NULL) {
+            printf(" %s", tipo);
+            tipo = (char *)list_next(pokemon->tipos);
+        }
+        printf("\n");
+        printf("Generacion: %s\n", pokemon->generacion);
+        printf("Legendario: %s\n", pokemon->legendario);
+    }
+    else {
+        printf("-------------------------------\n");
+        printf("POKEMON NO ENCONTRADO\n");
+    }
+    printf("------------------------------\n\n");
+}
+
+void mostrarTipo(List* listaPokeTipos){
+    char *tipo = (char *)list_first(listaPokeTipos);
+    printf("%s", tipo);
+    tipo = (char *)list_next(listaPokeTipos);
+    if (tipo != NULL)
+        printf(", %s", tipo);
+    printf(".\n");
+    return;
+}
 
 
-  void mostrarMenu() {
-      printf("========================================\n");
-      printf("     MENU PRINCIPAL\n");
-      printf("========================================\n");
-      printf("1. Cargar pokémon\n");
-      printf("2. Buscar por nombre\n");
-      printf("3. Buscar por número\n");
-      printf("4. Buscar por tipo\n");
-      printf("5. Buscar por generación\n");
-      printf("6. Salir\n\n");
-  }
+void buscarPorTipo(HashMap *tipoPokemon){
+    char tipo[100];
+    printf("Ingrese el tipo a buscar: ");
+    scanf("%s", tipo);
+    printf("\n");
+    Pair *pair = searchMap(tipoPokemon, tipo);
+    if (pair != NULL){
+        List *pokemones = (List *)pair->value;
+        Pokemon *pokemon = (Pokemon *)list_first(pokemones);
+        printf("POKEMONES ENCONTRADOS\n\n");
+        printf("-------------------------------\n");
+        printf("Pokemons tipo %s\n", tipo);
+        while (pokemon != NULL){
+            printf("Nombre: %s\n", pokemon->nombre);
+            printf("Numero: %s\n", pokemon->numero);
+            mostrarTipo(pokemon);
+            printf("Generacion: %s\n", pokemon->generacion);
+            printf("Legendario: %s\n\n", pokemon->legendario);
+            pokemon = (Pokemon *) list_next(pokemones);
+        }
+    }
+    else{
+        printf("-------------------------------\n");
+        printf("NO HAY POKEMONS DEL TIPO %s\n", tipo);
+    }
+    printf("-------------------------------\n");
+}
 
-  void buscarPorNombre(HashMap *nombrePokemon) {
-      char nombre[100];
-      printf("Ingrese el nombre del pokemon a buscar: ");
-      scanf("%s", nombre);
-      printf("\n");
-      Pair *pair = searchMap(nombrePokemon, nombre);
-      if (pair != NULL) {
-          Pokemon *pokemon = (Pokemon *)pair->value;
 
-          printf("POKEMON ENCONTRADO\n\n");
-          printf("-------------------------------\n");
-          printf("Nombre: %s\n", pokemon->nombre);
-          printf("Numero: %s\n", pokemon->numero);
-          char *tipo = (char *)list_first(pokemon->tipos);
-          printf("Tipo/s:");
-          while (tipo != NULL) {
-              printf(" %s", tipo);
-              tipo = (char *)list_next(pokemon->tipos);
-          }
-          printf("\n");
-          printf("Generacion: %s\n", pokemon->generacion);
-          printf("Legendario: %s\n", pokemon->legendario);
-      } else {
-          printf("-------------------------------\n");
-          printf("POKEMON NO ENCONTRADO\n");
-      }
-      printf("------------------------------\n\n");
-  }
+/*
+void adivinarPokemon(HashMap *numeroPokemon){
+    int numAleatorio = rand() % 1071;
+    char *numChar;
+    sprintf(numChar, "%d", numAleatorio);
+    
+    Pair *pair = searchMap(numeroPokemon, numChar);
+    List *listaPokemones = (List *)pair->value;
+    Pokemon *adivinar = (Pokemon *)list_first(listaPokemones);
+    char intento[50];
+    int contIntentos = 0;
 
-  int main(void) {
-      int opcion;
-      HashMap *nombrePokemon = createMap(2000);
-      HashMap *tipoPokemon = createMap(2000);
-      HashMap *numeroPokemon = createMap(2000);
-      HashMap *generacionPokemon = createMap(2000);
+    while (true){
+        if (contIntentos == 4){
+        printf("Lamentablemente no haz acertado el pokemon, el cual era %s\n", adivinar->nombre);
+        }
+        if (contIntentos >= 0){
+            printf("El/Los tipo/s del pokemon es/son: ");
+            mostrarTipo(adivinar->tipos);
+        }
 
-      do {
-          mostrarMenu();
-          printf("Ingrese su opción: ");
-          scanf("%d", &opcion);
-          switch (opcion) {
-              case 1:
-                  printf("Cargando pokémon...\n\n");
-                  cargar_pokemon(nombrePokemon, tipoPokemon, numeroPokemon, generacionPokemon);
-                  break;
-              case 2:
-                  printf("Buscando por nombre...\n\n");
-                  limpiarPantalla();
-                  buscarPorNombre(nombrePokemon);
-                  break;
-              case 3:
-                  printf("Buscando por número...\n\n");
-                  // Falta implementar la función buscarPorNumero
-                  break;
-              case 4:
-                  printf("Buscando por tipo...\n\n");
-                  // Falta implementar la función buscarPorTipo
-                  break;
-              case 5:
-                  printf("Buscando por generación...\n\n");
-                  // Falta implementar la función buscarPorGeneracion
-                  break;
-              case 6:
-                  printf("Saliendo de la pokédex\n");
-                  break;
-              default:
-                  printf("Opción inválida. Por favor intenta de nuevo con una opcion valida\n\n");
-                  break;
-          }
-          presioneTeclaParaContinuar(); 
-          limpiarPantalla(); 
-      } while (opcion != 6);
-      return 0;
-  }
+        if (contIntentos >= 1){
+            printf("El pokemon es de la generacion: %s\n", adivinar->generacion);
+        }
+
+        if (contIntentos >= 2){
+            if (strcmp(adivinar->legendario, "TRUE") == 0){
+                printf("El pokemon es legendario\n");
+            }
+            else{
+                printf("El pokemon no es legendario\n");
+            }
+        }
+
+        if (contIntentos >= 3){
+            printf("!!!ULTIMO INTENTO!!!\n");
+            printf("El numero del pokemon es: %s\n", adivinar->numero);
+        }
+        
+        printf("Ingrese el nombre del pokemon: ");
+        scanf(" %s", intento);
+        
+        if (strcmp(intento, adivinar->nombre) == 0){
+            printf("!!!Haz acertado!!!\n");
+            return;
+        }
+
+        else{
+            printf("Parece que ese pokémon no es el correcto, intenta de nuevo\n");
+        }
+        contIntentos++;
+    }
+}
+*/
+
+
+
+int main(void) {
+    int opcion;
+    HashMap *nombrePokemon = createMap(2000);
+    HashMap *tipoPokemon = createMap(2000);
+    HashMap *numeroPokemon = createMap(2000);
+    HashMap *generacionPokemon = createMap(2000);
+    
+    do {
+        mostrarMenu();
+        printf("Ingrese su opción: ");
+        scanf("%d", &opcion);
+        switch (opcion) {
+            case 1:
+                printf("Cargando pokémon...\n\n");
+                cargar_pokemon(nombrePokemon, tipoPokemon, numeroPokemon, generacionPokemon);
+                break;
+            case 2:
+                printf("Buscando por nombre...\n\n");
+                buscarPorNombre(nombrePokemon);
+                break;
+            case 3:
+                printf("Buscando por número...\n\n");
+                // Falta implementar la función buscarPorNumero
+                break;
+            case 4:
+                printf("Buscando por tipo...\n\n");
+                buscarPorTipo(tipoPokemon);
+                // Falta implementar la función buscarPorTipo
+                break;
+            case 5:
+                printf("Buscando por generación...\n\n");
+                // Falta implementar la función buscarPorGeneracion
+                break;
+            case 6:
+                printf("Entrando a WHO IS THAT POKEMON?\n\n");
+                break;
+            case 7:
+                printf("Saliendo de la pokédex\n");
+                break;
+            default:
+                printf("Opción inválida. Por favor intenta de nuevo con una opcion valida\n\n");
+                break;
+        }
+        presioneTeclaParaContinuar(); 
+        limpiarPantalla(); 
+    } while (opcion != 6);
+    return 0;
+}
