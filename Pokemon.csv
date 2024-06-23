@@ -949,9 +949,9 @@ number,name,type1,type2,total,hp,attack,defense,sp_attack,sp_defense,speed,gener
 805,Stakataka,Rock,Steel,570,61,131,211,53,101,13,7,FALSE
 806,Blacephalon,Fire,Ghost,570,53,127,53,151,79,107,7,FALSE
 807,Zeraora,Electric,,600,88,112,75,102,80,143,7,TRUE
-808,Meltan,Steel,,300,46,65,65,55,35,34,0,TRUE
-809,Melmetal,Steel,,600,135,143,143,80,65,34,0,TRUE
-809,Gigantamax Melmetal,Steel,,600,135,143,143,80,65,34,0,TRUE
+808,Meltan,Steel,,300,46,65,65,55,35,34,7,TRUE
+809,Melmetal,Steel,,600,135,143,143,80,65,34,7,TRUE
+809,Gigantamax Melmetal,Steel,,600,135,143,143,80,65,34,7,TRUE
 810,Grookey,Grass,,310,50,65,50,40,40,65,8,FALSE
 811,Thwackey,Grass,,420,70,85,70,55,60,80,8,FALSE
 812,Rillaboom,Grass,,530,100,125,90,60,70,85,8,FALSE
