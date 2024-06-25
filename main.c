@@ -308,7 +308,7 @@ void buscarPorTipo(HashMap *tipoPokemon){
 
 void adivinarPokemon(HashMap *numeroPokemon){
     srand(time(NULL)); // Inicializa la semilla para la generación de números aleatorios
-    int numAleatorio = rand() % 1072; // Genera un número aleatorio entre 0 y 1072
+    int numAleatorio = rand() % 898; // Genera un número aleatorio entre 0 y 898
     char numChar[5]; // Declara un arreglo de caracteres con tamaño suficiente para almacenar la cadena
 
     sprintf(numChar, "%d", numAleatorio); // Convierte el número aleatorio a una cadena
@@ -323,7 +323,7 @@ void adivinarPokemon(HashMap *numeroPokemon){
     int contIntentos = 0;
 
     //Solo para probar si funciona correctamente adivinar
-    printf("%s\n", adivinar->nombre);
+    //printf("%s\n", adivinar->nombre);
 
     
     size_t intentos;
@@ -334,76 +334,81 @@ void adivinarPokemon(HashMap *numeroPokemon){
     getchar();
     if (strcmp(adivinar->nombre, intento) != 0)
     {
-        printf("No es el pokemon, intenta otra vez\n\n");
-        printf("Los tipos de tu pokemon son: ");
-        char *tipos = list_first(adivinar->tipos);
-
-        while (tipos != NULL){
-            printf(" %s", tipos);
-            tipos = list_next(adivinar->tipos);
-        }
-        printf("\n");
+        printf("No es el Pokémon, intenta otra vez\n\n");
+        printf("Tu Pokémon es legendario? %s\n" , adivinar->legendario);
         printf("Ingrese su Segundo Intento: ");
         scanf("%50[^\n]", intento);
         getchar();
         if (strcmp(adivinar->nombre, intento) != 0)
         {
             printf("No es el Pokémon, intenta otra vez\n\n");
-            printf("La generacion del pokemon es:  %s\n" , adivinar->generacion);
+            printf("Los tipos de tu pokemon son: ");
+            char *tipos = list_first(adivinar->tipos);
+            while (tipos != NULL){
+                printf(" %s", tipos);
+                tipos = list_next(adivinar->tipos);
+            }
+            printf("\n");
             printf("Ingrese su Tercer Intento: ");
             scanf("%50[^\n]", intento);
             getchar();
             if (strcmp(adivinar->nombre, intento) != 0)
             {
                 printf("No es el Pokémon, intenta otra vez\n\n");
-                printf("Tu Pokémon es legendario? %s\n" , adivinar->legendario);
+                printf("La generacion del Pokémon es:  %s\n" , adivinar->generacion);
                 printf("Ingrese su Cuarto Intento: ");
                 scanf("%50[^\n]", intento);
                 getchar();
                 if (strcmp(adivinar->nombre, intento) != 0)
                 {
                     printf("No es el Pokémon, intenta otra vez\n\n");
-                    printf("Ultima pista, su numero en la Pokedex es %s\n" , adivinar->numero);
-                    printf("Ingrese su ultimo intento: ");
+                    printf("Última pista, su numero en la Pokedex es %s\n" , adivinar->numero);
+                    printf("Ingrese su último intento: ");
                     scanf("%50[^\n]", intento);
                     getchar();
                     if (strcmp(adivinar->nombre, intento) != 0)
                     {
-                        printf("Pokémon incorrecto, haz perdido :(\n");
+                        printf("Pokémon incorrecto, has perdido :(\n");
                         printf("El Pokémon era: %s\n", adivinar->nombre);
+                        printf("Conseguiste 0 puntos!!! Vuelve a intentarlo!\n");
                         return;
 
                     }
                     else
                     {
                         printf("Adivinaste el Pokémon!\n");
-                        printf("Gracias por jugar! <3");
+                        printf("Conseguiste 20 puntos!!! Felicidades!!!\n");
+                        printf("Gracias por jugar! <3\n");
                         return;
                     }
 
                 }
                 else{
                     printf("Adivinaste el Pokémon!\n");
-                    printf("Gracias por jugar! <3");
+                    printf("Conseguiste 40 puntos!!! Felicidades!!!\n");
+                    printf("Gracias por jugar! <3\n");
                     return;
                 }
             }
             else{
                 printf("Adivinaste el Pokémon!\n");
-                printf("Gracias por jugar! <3");
+                printf("Conseguiste 60 puntos!!! Felicidades!!!\n");
+                printf("Gracias por jugar! <3\n");
                 return;
             }
 
         }
         else{
             printf("Adivinaste el Pokémon!\n");
-            printf("Gracias por jugar! <3");
+            printf("Gracias por jugar! <3\n");
+            printf("Conseguiste 80 puntos!!! Felicidades!!!\n");
             return;
         }
     }
     else{
         printf("Adivinaste el Pokémon!\n");
-        printf("Gracias por jugar! <3");
+        printf("Conseguiste 100 puntos!!! Felicidades!!!\n");
+        printf("Gracias por jugar! <3\n");
         return;
     }
 
@@ -450,7 +455,7 @@ int main(void) {
                 buscarPorGeneracion(generacionPokemon);
                 break;
             case '6':
-                printf("Entrando a WHO IS THAT POKEMON?\n\n");
+                printf("Entrando a WHO IS THAT POKEMON?\n");
                 adivinarPokemon(numeroPokemon);
                 break;
             case '7':
