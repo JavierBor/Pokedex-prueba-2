@@ -213,115 +213,126 @@ void buscarPorNumero(HashMap *numeroPokemon){
 
 
 
+// Función para buscar Pokémon por generación en el HashMap proporcionado
 void buscarPorGeneracion(HashMap *generacionPokemon) {
-    char generacion[101];
+    char generacion[101];  // Variable para almacenar la generación ingresada por el usuario
     printf("Ingrese la generación a buscar: ");
-    scanf("%s", generacion);
+    scanf("%s", generacion);  // Leer la generación desde la entrada estándar
     printf("\n");
-    size_t totalGeneracion;
+
+    size_t totalGeneracion;  // Variable para contar el total de Pokémon encontrados en la generación
     totalGeneracion = 0;
 
-    Pair *pair = searchMap(generacionPokemon, generacion);
+    Pair *pair = searchMap(generacionPokemon, generacion);  // Buscar la generación en el HashMap
     if (pair != NULL) {
-        List *pokemones = (List *)pair->value; // Lista de Pokémon de la generación especificada
+        List *pokemones = (List *)pair->value;  // Obtener la lista de Pokémon correspondiente a la generación buscada
 
         printf("POKÉMON ENCONTRADOS\n\n");
 
-        Pokemon *pokemon = (Pokemon *)list_first(pokemones);
+        Pokemon *pokemon = (Pokemon *)list_first(pokemones);  // Obtener el primer Pokémon de la lista
         while (pokemon != NULL) {
             printf("-------------------------------\n");
-            totalGeneracion+=1;
-            printf("Nombre: %s\n", pokemon->nombre);
-            printf("Numero: %s\n", pokemon->numero);
-            char *tipo = (char *)list_first(pokemon->tipos);
+            totalGeneracion += 1;  // Incrementar el contador de Pokémon encontrados en la generación
+            printf("Nombre: %s\n", pokemon->nombre);  // Imprimir el nombre del Pokémon
+            printf("Numero: %s\n", pokemon->numero);  // Imprimir el número del Pokémon
+            char *tipo = (char *)list_first(pokemon->tipos);  // Obtener el primer tipo del Pokémon
             printf("Tipo/s:");
             while (tipo != NULL){
-                printf(" %s", tipo);
-                tipo = (char *)list_next(pokemon->tipos);
+                printf(" %s", tipo);  // Imprimir cada tipo del Pokémon
+                tipo = (char *)list_next(pokemon->tipos);  // Avanzar al siguiente tipo del Pokémon
             }
             printf("\n");
-            printf("Generacion: %s\n", pokemon->generacion);
-            printf("Legendario: %s\n", pokemon->legendario);
-            pokemon = (Pokemon *)list_next(pokemones);
+            printf("Generacion: %s\n", pokemon->generacion);  // Imprimir la generación del Pokémon
+            printf("Legendario: %s\n", pokemon->legendario);  // Imprimir el estado legendario del Pokémon
+            pokemon = (Pokemon *)list_next(pokemones);  // Avanzar al siguiente Pokémon en la lista
         }
     } else {
+        // Si no se encontró ningún Pokémon de la generación buscada, mostrar un mensaje
         printf("-------------------------------\n");
         printf("NO HAY POKÉMON DE LA GENERACIÓN %s\n", generacion);
     }
 
-
     printf("-------------------------------\n");
-    if (totalGeneracion != 0)
-    {
-        printf("\nTOTAL DE POKÉMON DE LA GENERACIÓN  %ld\n", totalGeneracion);
-
+    if (totalGeneracion != 0) {
+        // Si se encontraron Pokémon en la generación buscada, imprimir el total encontrado
+        printf("\nTOTAL DE POKÉMON DE LA GENERACIÓN %s: %ld\n", generacion, totalGeneracion);
     }
 }
 
 
+
+// Función para buscar un Pokémon por nombre en el HashMap proporcionado
 void buscarPorNombre(HashMap *nombrePokemon) {
-    char nombre[101];
+    char nombre[101];  // Variable para almacenar el nombre del Pokémon ingresado por el usuario
     printf("Ingrese el nombre del Pokémon a buscar: ");
-    scanf("%s", nombre);
+    scanf("%s", nombre);  // Leer el nombre del Pokémon desde la entrada estándar
     printf("\n");
-    Pair *pair = searchMap(nombrePokemon, nombre);
+
+    Pair *pair = searchMap(nombrePokemon, nombre);  // Buscar el nombre del Pokémon en el HashMap
     if (pair != NULL) {
-        Pokemon *pokemon = (Pokemon *)pair->value;
+        Pokemon *pokemon = (Pokemon *)pair->value;  // Obtener el Pokémon encontrado
 
         printf("POKÉMON ENCONTRADO\n\n");
         printf("-------------------------------\n");
-        printf("Nombre: %s\n", pokemon->nombre);
-        printf("Numero: %s\n", pokemon->numero);
-        char *tipo = (char *)list_first(pokemon->tipos);
+        printf("Nombre: %s\n", pokemon->nombre);  // Imprimir el nombre del Pokémon
+        printf("Numero: %s\n", pokemon->numero);  // Imprimir el número del Pokémon
+        char *tipo = (char *)list_first(pokemon->tipos);  // Obtener el primer tipo del Pokémon
         printf("Tipo/s:");
         while (tipo != NULL) {
-            printf(" %s", tipo);
-            tipo = (char *)list_next(pokemon->tipos);
+            printf(" %s", tipo);  // Imprimir cada tipo del Pokémon
+            tipo = (char *)list_next(pokemon->tipos);  // Avanzar al siguiente tipo del Pokémon
         }
         printf("\n");
-        printf("Generacion: %s\n", pokemon->generacion);
-        printf("Legendario: %s\n", pokemon->legendario);
+        printf("Generacion: %s\n", pokemon->generacion);  // Imprimir la generación del Pokémon
+        printf("Legendario: %s\n", pokemon->legendario);  // Imprimir el estado legendario del Pokémon
     }
     else {
+        // Si no se encontró el Pokémon con el nombre ingresado, mostrar un mensaje
         printf("-------------------------------\n");
         printf("POKÉMON NO ENCONTRADO\n");
     }
-    printf("-------------------------------\n\n");
+    printf("-------------------------------\n\n");  // Imprimir línea separadora al final de la búsqueda
 }
 
 
-void buscarPorTipo(HashMap *tipoPokemon){
-    char tipo[101];
+
+// Función para buscar Pokémon por tipo en el HashMap proporcionado
+void buscarPorTipo(HashMap *tipoPokemon) {
+    char tipo[101];  // Variable para almacenar el tipo de Pokémon ingresado por el usuario
     printf("Ingrese el tipo a buscar: ");
-    scanf("%s", tipo);
+    scanf("%s", tipo);  // Leer el tipo de Pokémon desde la entrada estándar
     printf("\n");
-    Pair *pair = searchMap(tipoPokemon, tipo);
-    if (pair != NULL){
-        List *pokemones = (List *)pair->value;
-        Pokemon *pokemon = (Pokemon *)list_first(pokemones);
+
+    Pair *pair = searchMap(tipoPokemon, tipo);  // Buscar el tipo de Pokémon en el HashMap
+    if (pair != NULL) {
+        List *pokemones = (List *)pair->value;  // Obtener la lista de Pokémon del tipo especificado
+        Pokemon *pokemon = (Pokemon *)list_first(pokemones);  // Obtener el primer Pokémon de la lista
+
         printf("POKÉMON TIPO %s ENCONTRADOS\n\n", tipo);
-        while (pokemon != NULL){
+        while (pokemon != NULL) {
             printf("-------------------------------\n");
-            printf("Nombre: %s\n", pokemon->nombre);
-            printf("Numero: %s\n", pokemon->numero);
-            char *tipos = list_first(pokemon->tipos);
+            printf("Nombre: %s\n", pokemon->nombre);  // Imprimir el nombre del Pokémon
+            printf("Numero: %s\n", pokemon->numero);  // Imprimir el número del Pokémon
+            char *tipos = list_first(pokemon->tipos);  // Obtener el primer tipo del Pokémon
             printf("Tipo/s:");
-            while (tipos != NULL){
-                printf(" %s", tipos);
-                tipos = list_next(pokemon->tipos);
+            while (tipos != NULL) {
+                printf(" %s", tipos);  // Imprimir cada tipo del Pokémon
+                tipos = list_next(pokemon->tipos);  // Avanzar al siguiente tipo del Pokémon
             }
             printf("\n");
-            printf("Generacion: %s\n", pokemon->generacion);
-            printf("Legendario: %s\n", pokemon->legendario);
-            pokemon = (Pokemon *) list_next(pokemones);
+            printf("Generacion: %s\n", pokemon->generacion);  // Imprimir la generación del Pokémon
+            printf("Legendario: %s\n", pokemon->legendario);  // Imprimir el estado legendario del Pokémon
+            pokemon = (Pokemon *)list_next(pokemones);  // Avanzar al siguiente Pokémon en la lista
         }
     }
-    else{
+    else {
+        // Si no se encontró ningún Pokémon con el tipo ingresado, mostrar un mensaje
         printf("-------------------------------\n");
         printf("NO HAY POKÉMON DEL TIPO %s\n", tipo);
     }
-    printf("-------------------------------\n");
+    // No se incluye un printf adicional al final, ya que la función original no lo tiene
 }
+
 
 
 void adivinarPokemon(HashMap *numeroPokemon){
