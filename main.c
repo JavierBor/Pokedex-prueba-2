@@ -8,6 +8,7 @@
 #include "TDAs/hashmap.h"
 #include "TDAs/extra.h"
 
+// Estructura que representa un Pokémon
 typedef struct {
     char nombre[100];
     char numero[5];
@@ -16,6 +17,7 @@ typedef struct {
     char legendario[100];
 } Pokemon;
 
+// Función que muestra el menú principal
 void mostrarMenu() {
     printf("========================================\n");
     printf("     MENU PRINCIPAL\n");
@@ -34,108 +36,126 @@ void mostrarMenu() {
 int es_numero(const char *cadena) {
     for (int i = 0; cadena[i] != '\0'; i++) {
         if (!isdigit(cadena[i])) {
-          return 0;
+          return 0; // No es un número
         }
     }
-    return 1;
+    return 1; // Es un número
   }
 
-
+// Función para cargar los datos de Pokémon desde un archivo CSV
 void cargar_pokemon(HashMap *nombrePokemon, HashMap *tipoPokemon, HashMap *numeroPokemon, HashMap *generacionPokemon) {
+    // Abrir el archivo CSV para lectura
     FILE *archivo = fopen("Pokemon.csv", "r");
-    if (archivo == NULL) {
-        perror("Error al abrir el archivo");
-        return;
+    if (archivo == NULL) { 
+        perror("Error al abrir el archivo");  // Mostrar mensaje de error si no se puede abrir el archivo
+        return;  // Salir de la función si ocurre un error al abrir el archivo
     }
 
-    List *listaPokeTipos;
-    char **campos;
+    List *listaPokeTipos;  // Lista temporal para almacenar tipos de Pokémon
+    char **campos;  // Array para almacenar los campos de cada línea CSV
+
+    // Leer la primera línea del archivo CSV (encabezados) y avanzar al siguiente
     campos = leer_linea_csv(archivo, ',');
     while ((campos = leer_linea_csv(archivo, ',')) != NULL) {
-        Pokemon *pokemon = (Pokemon *)malloc(sizeof(Pokemon));
+        Pokemon *pokemon = (Pokemon *)malloc(sizeof(Pokemon));  // Reservar memoria para un nuevo Pokémon
         if (pokemon == NULL) {
-            perror("Error al asignar memoria");
-            return;
+            perror("Error al asignar memoria");  // Mostrar mensaje de error si falla la asignación de memoria
+            return;  // Salir de la función si falla la asignación de memoria
         }
+
+        // Copiar campos del archivo CSV al struct Pokemon
         strcpy(pokemon->numero, campos[0]);
         strcpy(pokemon->nombre, campos[1]);
+
+        // Crear una lista para almacenar los tipos del Pokémon y agregar el primer tipo
         pokemon->tipos = list_create();
         list_pushBack(pokemon->tipos, strdup(campos[2]));
+
+        // Buscar el tipo en el HashMap de tipos de Pokémon
         Pair *buscarTipo = searchMap(tipoPokemon, campos[2]);
         if (buscarTipo == NULL || buscarTipo->value == NULL) {
+            // Si el tipo no existe en el HashMap, crear una nueva lista de Pokémon y agregarlo
             listaPokeTipos = list_create();
             list_pushBack(listaPokeTipos, pokemon);
             insertMap(tipoPokemon, strdup(campos[2]), listaPokeTipos);
-        } 
-        else {
+        } else {
+            // Si el tipo ya existe, obtener la lista de Pokémon y agregarlo
             listaPokeTipos = (List *)buscarTipo->value;
             list_pushBack(listaPokeTipos, pokemon);
         }
 
-        if (!es_numero(campos[3])){
+        // Verificar si el campo siguiente no es un número (puede ser un segundo tipo)
+        if (!es_numero(campos[3])) {
+            // Agregar el segundo tipo a la lista de tipos del Pokémon
             list_pushBack(pokemon->tipos, strdup(campos[3]));
 
+            // Buscar el segundo tipo en el HashMap de tipos de Pokémon
             buscarTipo = searchMap(tipoPokemon, campos[3]);
             if (buscarTipo == NULL || buscarTipo->value == NULL) {
+                // Si el segundo tipo no existe en el HashMap, crear una nueva lista de Pokémon y agregarlo
                 listaPokeTipos = list_create();
                 list_pushBack(listaPokeTipos, pokemon);
                 insertMap(tipoPokemon, strdup(campos[3]), listaPokeTipos);
             } else {
+                // Si el segundo tipo ya existe, obtener la lista de Pokémon y agregarlo
                 List *listaPokeTiposEncontrados = buscarTipo->value;
                 list_pushBack(listaPokeTiposEncontrados, pokemon);
             }
+
+            // Copiar la generación y el estado legendario del Pokémon
             strcpy(pokemon->generacion, campos[11]);
             strcpy(pokemon->legendario, campos[12]);
 
-        }
-        else
-        {
+        } else {
+            // Si no hay segundo tipo, copiar solo la generación y el estado legendario del Pokémon
             strcpy(pokemon->generacion, campos[10]);
             strcpy(pokemon->legendario, campos[11]);
-
         }
 
-
-
+        // Insertar el Pokémon en el HashMap por nombre
         insertMap(nombrePokemon, pokemon->nombre, pokemon);
-           // Insertar en el HashMap de generación
-            Pair *buscarGeneracion = searchMap(generacionPokemon, pokemon->generacion);
-            if (buscarGeneracion == NULL || buscarGeneracion->value == NULL) {
-                List *listaPokeGeneracion = list_create();
-                list_pushBack(listaPokeGeneracion, pokemon);
-                insertMap(generacionPokemon, strdup(pokemon->generacion), listaPokeGeneracion);
-            } else {
-                List *listaPokeGeneracion = (List *)buscarGeneracion->value;
-                list_pushBack(listaPokeGeneracion, pokemon);
-            }
 
-
-
-            Pair *buscarNumero = searchMap(numeroPokemon, pokemon->numero);
-            if (buscarNumero == NULL || buscarNumero->value == NULL) {
-                List *listaPokeNumero = list_create();
-                list_pushBack(listaPokeNumero, pokemon);
-                insertMap(numeroPokemon, strdup(pokemon->numero), listaPokeNumero);
-            } else {
-                List *listaPokenumero = (List *)buscarNumero->value;
-                list_pushBack(listaPokenumero, pokemon);
-            }
-
-
+        // Insertar el Pokémon en el HashMap por generación
+        Pair *buscarGeneracion = searchMap(generacionPokemon, pokemon->generacion);
+        if (buscarGeneracion == NULL || buscarGeneracion->value == NULL) {
+            // Si la generación no existe en el HashMap, crear una nueva lista de Pokémon y agregarlo
+            List *listaPokeGeneracion = list_create();
+            list_pushBack(listaPokeGeneracion, pokemon);
+            insertMap(generacionPokemon, strdup(pokemon->generacion), listaPokeGeneracion);
+        } else {
+            // Si la generación ya existe, obtener la lista de Pokémon y agregarlo
+            List *listaPokeGeneracion = (List *)buscarGeneracion->value;
+            list_pushBack(listaPokeGeneracion, pokemon);
         }
 
-        fclose(archivo);
+        // Insertar el Pokémon en el HashMap por número
+        Pair *buscarNumero = searchMap(numeroPokemon, pokemon->numero);
+        if (buscarNumero == NULL || buscarNumero->value == NULL) {
+            // Si el número no existe en el HashMap, crear una nueva lista de Pokémon y agregarlo
+            List *listaPokeNumero = list_create();
+            list_pushBack(listaPokeNumero, pokemon);
+            insertMap(numeroPokemon, strdup(pokemon->numero), listaPokeNumero);
+        } else {
+            // Si el número ya existe, obtener la lista de Pokémon y agregarlo
+            List *listaPokenumero = (List *)buscarNumero->value;
+            list_pushBack(listaPokenumero, pokemon);
+        }
+    }
 
+    // Cerrar el archivo CSV después de cargar todos los Pokémon
+    fclose(archivo);
+
+    // Mostrar todos los Pokémon cargados correctamente
     Pair *pair = firstMap(nombrePokemon);
     size_t totalPokemones = 0;
-    while (pair != NULL){
+    while (pair != NULL) {
         Pokemon *pokemon = (Pokemon *)pair->value;
         printf("-------------------------------\n");
         printf("Nombre: %s\n", pokemon->nombre);
         printf("Numero: %s\n", pokemon->numero);
         char *tipo = (char *)list_first(pokemon->tipos);
         printf("Tipo/s:");
-        while (tipo != NULL){
+        while (tipo != NULL) {
             printf(" %s", tipo);
             tipo = (char *)list_next(pokemon->tipos);
         }
@@ -144,53 +164,53 @@ void cargar_pokemon(HashMap *nombrePokemon, HashMap *tipoPokemon, HashMap *numer
         printf("Legendario: %s\n", pokemon->legendario);
 
         pair = nextMap(nombrePokemon);
-        totalPokemones+=1;
-
+        totalPokemones += 1;
     }
     printf("-------------------------------\n");
     printf("POKÉMON CARGADOS CORRECTAMENTE!!! ツ \n");
     printf("TOTAL DE POKÉMON CARGADOS CORRECTAMENTE: %ld\n", totalPokemones);
-
-
 }
 
 
+
+// Función para buscar un Pokémon por su número en el HashMap proporcionado
 void buscarPorNumero(HashMap *numeroPokemon){
-    char numero[101];
+    char numero[101];  // Variable para almacenar el número de Pokémon ingresado por el usuario
     printf("Ingrese el numero del Pokémon a buscar: ");
-    scanf("%s", numero);
+    scanf("%s", numero);  // Leer el número del Pokémon desde la entrada estándar
     printf("\n");
-    Pair *pair = searchMap(numeroPokemon, numero);
+
+    Pair *pair = searchMap(numeroPokemon, numero);  // Buscar el número del Pokémon en el HashMap
     if (pair != NULL) {
-        List *pokemones = (List *)pair->value; // Lista de Pokémon de la generación especificada
+        List *pokemones = (List *)pair->value;  // Obtener la lista de Pokémon correspondiente al número buscado
 
         printf("Pokémon ENCONTRADOS\n\n");
-        
-        Pokemon *pokemon = (Pokemon *)list_first(pokemones);
+
+        Pokemon *pokemon = (Pokemon *)list_first(pokemones);  // Obtener el primer Pokémon de la lista
         while (pokemon != NULL) {
             printf("-------------------------------\n");
-            printf("Nombre: %s\n", pokemon->nombre);
-            printf("Numero: %s\n", pokemon->numero);
-            char *tipo = (char *)list_first(pokemon->tipos);
+            printf("Nombre: %s\n", pokemon->nombre);  // Imprimir el nombre del Pokémon
+            printf("Numero: %s\n", pokemon->numero);  // Imprimir el número del Pokémon
+            char *tipo = (char *)list_first(pokemon->tipos);  // Obtener el primer tipo del Pokémon
             printf("Tipo/s:");
             while (tipo != NULL){
-                printf(" %s", tipo);
-                tipo = (char *)list_next(pokemon->tipos);
+                printf(" %s", tipo);  // Imprimir cada tipo del Pokémon
+                tipo = (char *)list_next(pokemon->tipos);  // Avanzar al siguiente tipo del Pokémon
             }
             printf("\n");
-            printf("Generacion: %s\n", pokemon->generacion);
-            printf("Legendario: %s\n", pokemon->legendario);
-            pokemon = (Pokemon *)list_next(pokemones);
+            printf("Generacion: %s\n", pokemon->generacion);  // Imprimir la generación del Pokémon
+            printf("Legendario: %s\n", pokemon->legendario);  // Imprimir el estado legendario del Pokémon
+            pokemon = (Pokemon *)list_next(pokemones);  // Avanzar al siguiente Pokémon en la lista
         }
     } else {
+        // Si no se encontró ningún Pokémon con el número buscado, mostrar un mensaje
         printf("-------------------------------\n");
         printf("No se encontro el numero en la Pokedex\n");
     }
 
-
     printf("-------------------------------\n");
-
 }
+
 
 
 void buscarPorGeneracion(HashMap *generacionPokemon) {
