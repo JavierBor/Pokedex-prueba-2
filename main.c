@@ -330,6 +330,7 @@ void buscarPorTipo(HashMap *tipoPokemon) {
         printf("-------------------------------\n");
         printf("NO HAY POKÉMON DEL TIPO %s\n", tipo);
     }
+    printf("-------------------------------\n");
     // No se incluye un printf adicional al final, ya que la función original no lo tiene
 }
 
@@ -359,26 +360,27 @@ void adivinarPokemon(HashMap *numeroPokemon){
     intentos = 0;
 
     printf("Ingrese su primer Intento: ");
-    scanf("%100[^\n]", intento);
+    scanf("%100[^\n]", intento); //El usuario ingresa el primer intento
     getchar();
     if (strcmp(adivinar->nombre, intento) != 0)
     {
         printf("No es el Pokémon, intenta otra vez\n\n");
         printf("Tu Pokémon es legendario? %s\n" , adivinar->legendario);
         printf("Ingrese su Segundo Intento: ");
-        scanf("%100[^\n]", intento);
+        scanf("%100[^\n]", intento); //El usuario ingresa el segundo intento
         getchar();
         if (strcmp(adivinar->nombre, intento) != 0)
         {
             printf("No es el Pokémon, intenta otra vez\n\n");
             printf("Los tipos de tu pokemon son: ");
+            //El programa muestra los tipos del Pokémon a adivinar
             char *tipos = list_first(adivinar->tipos);
             while (tipos != NULL){
                 printf(" %s", tipos);
                 tipos = list_next(adivinar->tipos);
             }
             printf("\n");
-            printf("Ingrese su Tercer Intento: ");
+            printf("Ingrese su Tercer Intento: "); //El usuario ingresa el tercer intento
             scanf("%100[^\n]", intento);
             getchar();
             if (strcmp(adivinar->nombre, intento) != 0)
@@ -386,14 +388,14 @@ void adivinarPokemon(HashMap *numeroPokemon){
                 printf("No es el Pokémon, intenta otra vez\n\n");
                 printf("La generacion del Pokémon es:  %s\n" , adivinar->generacion);
                 printf("Ingrese su Cuarto Intento: ");
-                scanf("%100[^\n]", intento);
+                scanf("%100[^\n]", intento); //El usuario ingresa el cuarto intento
                 getchar();
                 if (strcmp(adivinar->nombre, intento) != 0)
                 {
                     printf("No es el Pokémon, intenta otra vez\n\n");
                     printf("Última pista, su numero en la Pokedex es %s\n" , adivinar->numero);
                     printf("Ingrese su último intento: ");
-                    scanf("%100[^\n]", intento);
+                    scanf("%100[^\n]", intento); //El usuario ingresa el último intento
                     getchar();
                     if (strcmp(adivinar->nombre, intento) != 0)
                     {
@@ -446,10 +448,10 @@ void adivinarPokemon(HashMap *numeroPokemon){
 
 int main(void) {
     char opcion;
-    HashMap *nombrePokemon = createMap(2000);
-    HashMap *tipoPokemon = createMap(2000);
-    HashMap *numeroPokemon = createMap(2000);
-    HashMap *generacionPokemon = createMap(2000);
+    HashMap *nombrePokemon = createMap(2000); //Mapa para guardar los Pokémon por nombre
+    HashMap *tipoPokemon = createMap(2000); //Mapa para guardar los Pokémon por tipo
+    HashMap *numeroPokemon = createMap(2000); //Mapa para guardar los Pokémon por número
+    HashMap *generacionPokemon = createMap(2000); //Mapa para guardar los Pokémon por generación
     int cont = 0;
 
     do {
@@ -458,6 +460,7 @@ int main(void) {
         scanf("%c", &opcion);
         switch(opcion) {
             case '1':
+                //Si no se a llamado a la funcion anteriormente, llamarla, en caso contrario mostrar un mensaje que ya se hizo
                 if (cont == 0){
                     printf("Cargando pokémon...\n\n");
                     cargar_pokemon(nombrePokemon, tipoPokemon, numeroPokemon, generacionPokemon);

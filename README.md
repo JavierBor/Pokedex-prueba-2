@@ -11,7 +11,7 @@ Dado que el sistema está diseñado para ser accesible y fácil de probar, recom
 1. Visita [Repl.it](https://repl.it/).
 2. Crea una nueva cuenta o inicia sesión si ya tienes una.
 3. Una vez en tu dashboard, selecciona "New Repl" y elige "Import from GitHub".
-4. Pega la URL del repositorio: `https://github.com/JavierBor/Pokedex-prueba-2/settings`.
+4. Pega la URL del repositorio: `https://github.com/JavierBor/Pokedex-prueba-2`.
 5. [Repl.it](http://repl.it/) clonará el repositorio y preparará un entorno de ejecución.
 6. Presiona el botón "Run" para compilar y ejecutar la aplicación.
 
@@ -160,10 +160,34 @@ El progama muestra todos los Pokémon que coincidan con la genración ngresada p
 El usuario ingresa el Pokémon que cree que es en base a las pistas proporcionadas por el usuario.
 
 ````
-Ingresar printeo.
+Ingrese su opción: 6
+Entrando a WHO IS THAT POKEMON?
+
+Ingrese su primer Intento: Pikachu
+No es el Pokémon, intenta otra vez
+
+Tu Pokémon es legendario? FALSE
+Ingrese su Segundo Intento: Dhelmise
+No es el Pokémon, intenta otra vez
+
+Los tipos de tu pokemon son:  Water Psychic
+Ingrese su Tercer Intento: Gallade
+No es el Pokémon, intenta otra vez
+
+La generacion del Pokémon es:  2
+Ingrese su Cuarto Intento: Unown
+No es el Pokémon, intenta otra vez
+
+Última pista, su numero en la Pokedex es 199
+Ingrese su último intento: Slowking
+
+¡Adivinaste el Pokémon!
+¡¡¡Conseguiste 20 puntos!!! ¡¡¡Felicidades!!!
+Gracias por jugar! <3
+Presione una tecla para continuar...
 ````
 
-El programa indica si el usuario falló o acerto, mostrando el puntaje correspondiente.
+Como se logra apreciar, el usuario ocupa los 5 intentos permitido acertaando en el quinto. El programa indica cuando fallo y cuando acerto dando su puntaje correspondiente
 
 ## Contribuciones (si son dos personas o más)
 
