@@ -109,7 +109,7 @@ Se muestra el/los Pokémon que corresponde/n al numero ingresado por el usuario.
 
 **Paso 4: Buscar por tipo**
 
-El usuario busca los Pokémon que correspondad a algun tipo.
+El usuario busca los Pokémon que correspondan a algun tipo.
 
 ```
 Ingrese su opción: 4
@@ -187,7 +187,7 @@ Gracias por jugar! <3
 Presione una tecla para continuar...
 ````
 
-Como se logra apreciar, el usuario ocupa los 5 intentos permitido acertaando en el quinto. El programa indica cuando fallo y cuando acerto dando su puntaje correspondiente
+Como se logra apreciar, el usuario ocupa los 5 intentos permitido acertando en el quinto. El programa indica cuando fallo y cuando acerto dando su puntaje correspondiente
 
 ## Contribuciones (si son dos personas o más)
 
